@@ -41,46 +41,49 @@ namespace Universal_CRP
 			/_______ (____  /   __/|   __/____  >
 			        \/    \/|__|   |__|       \/ ");
                 Console.ResetColor();
-                Console.WriteLine("[UCRP]    -> This program is by Zihad from the Zapps team.");
-                Console.WriteLine("[UCRP]    -> You can find the source at https://github.com/Mahi-Uddin/Universal-CRP/");
-                Console.WriteLine("[UCRP]    -> Please enter the version of your Clash Royale APK.\nEx -> 1.9.0");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[UCRP][INFO]    -> This program is made by Zihad from the Zapps team.");
+                Console.WriteLine("[UCRP][INFO]    -> You can find the source at https://github.com/Mahi-Uddin/Universal-CRP/");
+                Console.WriteLine("[UCRP][INFO]    -> You can download the executable file at https://bit.ly/GetUCRP/");
+                Console.WriteLine("[UCRP][INFO]    -> Please enter the version of your Clash Royale APK.");
+                Console.WriteLine("[UCRP][INFO]    -> Ex -> 1.9.0");
+                Console.ResetColor();
                 string apkVersion;
                 apkVersion = Console.ReadLine();
                 WebClient client = new WebClient();
                 string downloadedKey = client.DownloadString("http://zihad.net78.net/games/clash-royale/keys/" + apkVersion + ".txt");
-                string fileName = "libg.so";//Place libg in the folder of this program exe
-
+                string fileName = "libg.so";
                 byte[] fileBytes = File.ReadAllBytes(fileName);
                 byte[] searchPattern = HexToByteArray(downloadedKey);
-
-
-                byte[] replacePattern = HexToByteArray("72f1a4a4c48e44da0c42310f800e96624e6dc6a641a9d41c3b5039d8dfadc27e");//CR Patched
-
-                //Search
+                byte[] replacePattern = HexToByteArray("72f1a4a4c48e44da0c42310f800e96624e6dc6a641a9d41c3b5039d8dfadc27e");
                 IEnumerable<int> positions = FindPattern(fileBytes, searchPattern);
                 if (positions.Count() == 0)
                 {
-                    Console.WriteLine("[UCRP] Pattern not found.");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("[UCRP][ERROR] Pattern not found.");
+                    Console.ResetColor();
                     Console.Read();
                     return;
                 }
-
-                //Backup
                 string backupFileName = fileName + ".bak";
                 File.Copy(fileName, backupFileName);
-                Console.WriteLine("[UCRP] Backup file: {0} -> {1}", fileName, backupFileName);
-
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[UCRP][INFO] Backup file: {0} -> {1}", fileName, backupFileName);
+                Console.ResetColor();
                 foreach (int pos in positions)
                 {
-                    //Replace
-                    Console.WriteLine("[UCRP] Key offset: 0x{0}", pos.ToString("X8"));
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("[UCRP][INFO] Key offset: 0x{0}", pos.ToString("X8"));
+                    Console.ResetColor();
                     using (BinaryWriter bw = new BinaryWriter(File.Open(fileName, FileMode.Open, FileAccess.Write)))
                     {
                         bw.BaseStream.Seek(pos, SeekOrigin.Begin);
                         bw.Write(replacePattern);
                     }
 
-                    Console.WriteLine("[UCRP] File: {0} patched", fileName);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("[UCRP][INFO] File: {0} patched", fileName);
+                    Console.ResetColor();
                 }
 
                 Console.Read();
@@ -89,22 +92,27 @@ namespace Universal_CRP
             {
                 if(ex is WebException)
                 {
-                    Console.WriteLine("[UCRP] Error connecting to the remote server with given informations.");
-                    Console.WriteLine("[UCRP] Please check your internet connection, APK version and try again later.");
-                    Console.WriteLine("[UCRP] If the problem persists, contact me at zihadmahiuddin@gmail.com");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("[UCRP][ERROR] Error connecting to the remote server with given informations.");
+                    Console.WriteLine("[UCRP][ERROR] Please check your internet connection, APK version and try again later.");
+                    Console.WriteLine("[UCRP][ERROR] If the problem persists, contact me at zihadmahiuddin@gmail.com");
                     Console.Read();
+                    Console.ResetColor();
                 }
                 else if(ex is FileNotFoundException)
                 {
-                    Console.WriteLine("[UCRP] The file 'libg.so' could not be found.");
-                    Console.WriteLine("[UCRP] Please put the 'libg.so' file in the current folder, check for correct APK version and try again later.");
-                    Console.WriteLine("[UCRP] If the problem persists, contact me at zihadmahiuddin@gmail.com");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("[UCRP][ERROR] The file 'libg.so' could not be found.");
+                    Console.WriteLine("[UCRP][ERROR] Please put the 'libg.so' file in the current folder, check for correct APK version and try again later.");
+                    Console.WriteLine("[UCRP][ERROR] If the problem persists, contact me at zihadmahiuddin@gmail.com");
                     Console.Read();
+                    Console.ResetColor();
                 }
                 else
                 {
-                    Console.WriteLine("[UCRP] An unknown error has occured.\nError: " + ex.ToString());
-                    Console.WriteLine("[UCRP] If the problem persists, contact me at zihadmahiuddin@gmail.com");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("[UCRP][ERROR] An unknown error has occured.\nError: " + ex.ToString());
+                    Console.WriteLine("[UCRP][ERROR] If the problem persists, contact me at zihadmahiuddin@gmail.com");
                     Console.Read();
                 }
             }
